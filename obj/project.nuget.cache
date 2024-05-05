@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "QLdcaWnUN9hZSRpmPmkic6mxnqWkdogxEm1xcS9a7nE3S/d4pR/vp1sBLffKVfZH1tv/Mvl6Fg67MYnQUCELwA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\efimb\\Downloads\\VKanalizacii-master\\ВКанализации.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\efimb\\.nuget\\packages\\materialdesigncolors\\2.1.4\\materialdesigncolors.2.1.4.nupkg.sha512",
+    "C:\\Users\\efimb\\.nuget\\packages\\materialdesignthemes\\4.9.0\\materialdesignthemes.4.9.0.nupkg.sha512",
+    "C:\\Users\\efimb\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.39\\microsoft.xaml.behaviors.wpf.1.1.39.nupkg.sha512"
+  ],
+  "logs": []
+}
