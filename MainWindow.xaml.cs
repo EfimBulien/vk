@@ -1,57 +1,82 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Net;
+using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace ВКанализации
 {
     public partial class MainWindow
     {
-        //Текущий ip
-        private static readonly string? Ip = GetLocalIpAddress();
         private const string EmptyField = "";
-        private User? _user;
+        public static User? user;
         
         public MainWindow()
         {
             InitializeComponent();
         }
-        //Username, IP_Address - TextBox
-
-        //Создать новый чат
         private void CreateChat(object sender, RoutedEventArgs e)
         {
-            if (Username.Text == EmptyField) MessageBox.Show("Заполните имя пользователя!");
-            else
-            { 
-                _user = new User(Username.Text, Ip);
-                //user.Name = Username.Text;
-                var full = _user.Name + _user.Ip;
-                MessageBox.Show(full);
-                var server = new Server();
-                server.Show();
+            if (Username.Text == EmptyField)
+            {
+                MessageBox.Show("Заполните имя пользователя!");
+                return;
             }
-        }
-        //Присоединиться к существующему чату
-        private void JoinChat(object sender, RoutedEventArgs e)
-        {
-            if (Username.Text == EmptyField && IpAddress.Text == EmptyField) MessageBox.Show("Проверьте заполненность имени или введенный IP адрес");
+            else if (Username.Text == "sys")
+            {
+                MessageBox.Show("Имя пользователя не может быть 'sys'");
+                return;
+            }
+            else if (!Regex.IsMatch(Username.Text, @"^[a-zA-Z0-9]+$")) 
+            {
+                MessageBox.Show("Имя пользователя может содержать только буквы и цифры");
+                return;
+            }
             else
             {
-                _user = new User(Username.Text, IpAddress.Text);
-                //user.Name = Username.Text;
-                //user.IP = IpAddress.Text;
-                var full = _user.Name + _user.Ip;
-                MessageBox.Show(full);
-                var client = new Client();
-                client.Show();
+                user = new User(Username.Text);
+                var server = new Server();
+                server.Show();
+                Close();
             }
         }
-
-        private static string? GetLocalIpAddress()
+        private void JoinChat(object sender, RoutedEventArgs e)
         {
-            // Получаем все сетевые интерфейсы на компьютере
-            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            // Проходимся по каждому интерфейсу
-            return (from networkInterface in networkInterfaces where networkInterface.OperationalStatus == OperationalStatus.Up && networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback select networkInterface.GetIPProperties() into properties from unicastAddress in properties.UnicastAddresses where unicastAddress.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork select unicastAddress.Address.ToString()).FirstOrDefault();
+            if (Username.Text == EmptyField || IpAddress.Text == "")
+            {
+                MessageBox.Show("Проверьте заполненность имени или введенный IP адрес");
+                return;
+            }
+            else if (Username.Text == "sys")
+            {
+                MessageBox.Show("Имя пользователя не может быть 'sys'");
+                return;
+            }
+            else if (!Regex.IsMatch(Username.Text, @"^[a-zA-Z0-9]+$")) 
+            {
+                MessageBox.Show("Имя пользователя может содержать только буквы и цифры");
+                return;
+            }
+            else if (!IPAddress.TryParse(IpAddress.Text, out _))
+            {
+                MessageBox.Show("Неверный адрес");
+                return;
+            }
+            else
+            {
+                user = new User(Username.Text, IpAddress.Text);
+                Client.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                try
+                {
+                    Client.socket.Connect(IpAddress.Text, 7000);
+                    var client = new Client();
+                    client.Show();
+                    Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Не удалось подключиться к серверу");
+                }
+            }
         }
     }
 }

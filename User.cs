@@ -1,14 +1,11 @@
-﻿namespace ВКанализации
-{
-    public class User
-    {
-        public string Name;
-        public string? Ip;
+﻿using System.Net.Sockets;
 
-        public User(string name, string? ip)
-        {
-            Name = name;
-            Ip = ip;
-        }
+namespace ВКанализации
+{
+    public class User(string name, string? ip = null, Socket? client = null)
+    {
+        public string Name { get; } = name;
+        public string? Ip { get; } = ip;
+        public Socket? Client { get; } = client;
     }
 }
